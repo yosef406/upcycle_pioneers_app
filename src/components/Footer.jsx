@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { Home, AccountCircle, Camera } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
@@ -7,6 +7,11 @@ import style from "./Footer.module.css";
 
 export default function Footer() {
   const router = useRouter();
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    localStorage.getItem("user");
+  });
   return (
     <>
       {/* the purpose of this div is to gro to make the footer at the bottom */}
@@ -35,7 +40,7 @@ export default function Footer() {
             color="primary"
             href="#"
             onClick={() => {
-              if (localStorage.getItem("user")) {
+              if (user) {
                 // User is already signed in, take them to their profile page
                 router.push("/personal");
               } else {
@@ -45,7 +50,7 @@ export default function Footer() {
               }
             }}
           >
-            {localStorage.getItem("user") ? "Personal" : "SignIn"}
+            {user ? "Personal" : "SignIn"}
           </Button>
         </div>
       </footer>
