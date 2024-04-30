@@ -41,7 +41,7 @@ export default function CameraView() {
     >
       <video
         ref={videoRef}
-        onCanPlay={handleCanPlay}
+        // onCanPlay={handleCanPlay}
         autoPlay
         playsInline
         muted
