@@ -39,7 +39,7 @@ export default function CameraView() {
       <video
         ref={videoRef}
         autoPlay
-        // playsInline
+        playsInline
         muted
         style={{ width: "100%" }}
       ></video>
