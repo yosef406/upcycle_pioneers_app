@@ -18,7 +18,11 @@ export default function Camera() {
   const setPicture = (video) => {
     const canvas = canvasRef.current;
     if (video && canvas) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+
       const context = canvas.getContext("2d");
+      context.clearRect(0, 0, canvas.width, canvas.height);
       context.drawImage(video, 0, 0, canvas.width, canvas.height);
       setImgExist(true);
     }
@@ -26,12 +30,12 @@ export default function Camera() {
   return (
     <div className={style.container}>
       <h1>Camera</h1>
-      {/* Conditionally render CameraView */}
       {openCamera && (
         <CameraView setPicture={setPicture} setCancel={openCloseCamera} />
       )}
       <canvas
         ref={canvasRef}
+        className={style.canvas}
         style={{ display: `${imgExist ? "block" : "none"}` }}
       ></canvas>
       {imgExist ? (
