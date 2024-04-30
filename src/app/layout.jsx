@@ -15,6 +15,8 @@ export default function RootLayout({ children }) {
         sizes="180x180"
         href="/apple-touch-icon.png"
       />
+      <link rel="manifest" href="/manifest.json" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
 
       <body>
         <div className="layout">
