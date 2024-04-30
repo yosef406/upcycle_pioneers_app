@@ -4,6 +4,7 @@ export default function CameraView({ setPicture, setCancel }) {
   const videoRef = useRef(null);
 
   useEffect(() => {
+    let activeStream = null;
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices
         .getUserMedia({ video: { audio: false, facingMode: "environment" } })
@@ -14,12 +15,21 @@ export default function CameraView({ setPicture, setCancel }) {
           console.log("Something went wrong with accessing the camera!", error);
         });
     }
+    return () => {
+      stopCameraStream(activeStream); // Stop the stream when the component unmounts
+    };
   }, []);
-
+  const stopCameraStream = (stream) => {
+    if (stream) {
+      const tracks = stream.getTracks();
+      tracks.forEach((track) => track.stop());
+    }
+  };
   const captureImage = () => {
     const video = videoRef.current;
     if (video && setPicture) {
       setPicture(video);
+      stopCameraStream(video.srcObject);
       if (setCancel) {
         setCancel();
       }
@@ -27,6 +37,7 @@ export default function CameraView({ setPicture, setCancel }) {
   };
 
   const cancel = () => {
+    stopCameraStream(videoRef.current.srcObject);
     if (setCancel) {
       setCancel();
     }
