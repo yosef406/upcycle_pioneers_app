@@ -20,9 +20,6 @@ export default function CameraView() {
     }
   }, []);
 
-  function handleCanPlay() {
-    videoRef.current.play();
-  }
   const captureImage = () => {
     console.log("capturing image");
     const video = videoRef.current;
@@ -41,9 +38,8 @@ export default function CameraView() {
     >
       <video
         ref={videoRef}
-        // onCanPlay={handleCanPlay}
         autoPlay
-        playsInline
+        // playsInline
         muted
         style={{ width: "100%" }}
       ></video>
