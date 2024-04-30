@@ -1,0 +1,14 @@
+/* In your CSS file */
+.appFooter {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    padding-bottom: 30px;
+    position: sticky;
+    bottom: 0;
+  }
+  
+  .footerBtn {
+    display: flex;
+    justify-content: space-between;
+  }

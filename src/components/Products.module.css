@@ -1,0 +1,39 @@
+.productContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .productImage {
+    width: 100%;
+    max-width: 300px; /* adjust this value as needed */
+    height: auto;
+    margin-bottom: 20px;
+
+  }
+  .sellersDiv{
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .MuiCardRoot {
+    max-width: 450px; /* adjust this value as needed */
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+  }
+
+  .MuiCardContentRoot {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 20px; /* adjust this value as needed */
+  }
+  .productTitle {
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 10px;
+  }
