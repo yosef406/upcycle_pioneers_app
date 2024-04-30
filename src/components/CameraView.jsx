@@ -9,8 +9,8 @@ export default function CameraView() {
     // Get access to the camera
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices
-        .getUserMedia({ video: true })
-        .then(function (stream) {
+        .getUserMedia({ video: { audio: false, facingMode: "environment" } })
+        .then((stream) => {
           // Set the video source to the video stream from the camera
           if (videoRef.current) videoRef.current.srcObject = stream;
         })
@@ -20,6 +20,9 @@ export default function CameraView() {
     }
   }, []);
 
+  function handleCanPlay() {
+    videoRef.current.play();
+  }
   const captureImage = () => {
     console.log("capturing image");
     const video = videoRef.current;
@@ -36,7 +39,14 @@ export default function CameraView() {
     <div
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
-      <video ref={videoRef} autoPlay style={{ width: "100%" }}></video>
+      <video
+        ref={videoRef}
+        onCanPlay={handleCanPlay}
+        autoPlay
+        playsInline
+        muted
+        style={{ width: "100%" }}
+      ></video>
       <button onClick={captureImage}>Take Picture</button>
       <canvas
         ref={canvasRef}
