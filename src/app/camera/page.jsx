@@ -27,6 +27,36 @@ export default function Camera() {
       setImgExist(true);
     }
   };
+
+  const getCanvasBlob = (callback) => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.toBlob(callback, "image/jpeg", 0.95); // Converts canvas to Blob
+    }
+  };
+
+  const uploadImage = () => {
+    getCanvasBlob((blob) => {
+      if (!blob) return;
+
+      const formData = new FormData();
+      formData.append("file", blob, "image.jpeg"); // Append the Blob to FormData
+
+      fetch("https://your-server.com/upload", {
+        // Replace with your server URL
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    });
+  };
+
   return (
     <div className={style.container}>
       <h1>Camera</h1>
