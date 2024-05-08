@@ -1,15 +1,26 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@mui/material";
 import { Camera as CameraIcon } from "@mui/icons-material";
 import FileUploadIcon from "@mui/icons-material/FileUpload";
 import CameraView from "../../components/CameraView";
 import style from "./page.module.css";
+import useFetch from "@/hooks/useFetch";
+import { useRouter } from "next/navigation";
 
 export default function Camera() {
   const [openCamera, setOpenCamera] = useState(false);
   const canvasRef = useRef(null);
   const [imgExist, setImgExist] = useState(false);
+  const { data, loading, error, request } = useFetch("http://localhost:5000");
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loading && !error && data) {
+      localStorage.setItem("apiData", JSON.stringify(data)); // Store data
+      router.push("/review");
+    }
+  }, [data, error, loading]);
 
   const openCloseCamera = () => {
     setOpenCamera(!openCamera);
@@ -28,33 +39,39 @@ export default function Camera() {
     }
   };
 
-  const getCanvasBlob = (callback) => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      canvas.toBlob(callback, "image/jpeg", 0.95); // Converts canvas to Blob
+  const convertCanvasToBase64 = () => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const base64Image = canvas.toDataURL("image/png"); // Use "image/jpeg" for JPEG format
+      console.log("image size: " + calculateImageSizeFromBase64(base64Image));
+      return base64Image;
     }
   };
 
+  function calculateImageSizeFromBase64(base64String) {
+    // Remove data URL part if present
+    const base64Only = base64String.split(",")[1] || base64String;
+
+    // Adjust for padding
+    let padding = 0;
+    if (base64Only.endsWith("==")) {
+      padding = 2;
+    } else if (base64Only.endsWith("=")) {
+      padding = 1;
+    }
+
+    // Calculate size in bytes
+    const sizeInBytes = (base64Only.length * 3) / 4 - padding;
+
+    // Convert bytes to megabytes with two decimal places
+    const sizeInMegabytes = (sizeInBytes / (1024 * 1024)).toFixed(2);
+
+    return sizeInMegabytes;
+  }
+
   const uploadImage = () => {
-    getCanvasBlob((blob) => {
-      if (!blob) return;
-
-      const formData = new FormData();
-      formData.append("file", blob, "image.jpeg"); // Append the Blob to FormData
-
-      fetch("https://your-server.com/upload", {
-        // Replace with your server URL
-        method: "POST",
-        body: formData,
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Success:", data);
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    });
+    const image64 = convertCanvasToBase64();
+    request.post("/new_image", { image64 });
   };
 
   return (
@@ -83,7 +100,7 @@ export default function Camera() {
               color="secondary"
               startIcon={<FileUploadIcon />}
               onClick={() => {
-                // TODO: upload image to server
+                uploadImage();
               }}
             >
               Upload

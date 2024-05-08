@@ -1,3 +1,65 @@
+"use client";
+import useFetch from "@/hooks/useFetch";
+import { useEffect, useState } from "react";
+import AiIdea from "@/components/AiIdea";
+import { useRouter } from "next/navigation";
 export default function Review() {
-  return <h1>Review</h1>;
+  const { data, loading, error, request } = useFetch("http://localhost:5000");
+  const [localData, setLocalData] = useState(null);
+  const [displayIdeas, setDisplayIdeas] = useState(false);
+  const router = useRouter();
+  // run when the page first starts
+  useEffect(() => {
+    if (!localData) {
+      const storedData = localStorage.getItem("apiData");
+      if (storedData) {
+        setLocalData(JSON.parse(storedData));
+      } else {
+        console.log(`lone 18: ${storedData}`);
+        router.push("/camera");
+      }
+    }
+  });
+
+  // run when the localData is retrieved
+  useEffect(() => {
+    if (!data && localData) {
+      request.post("/upcycle_for_image", localData);
+    }
+  }, [localData]);
+
+  // run when the server responds
+  useEffect(() => {
+    if (!loading && !error && data) {
+      if (data.aiResponse.status) {
+        setDisplayIdeas(true);
+        localStorage.removeItem("apiData");
+      }
+    } else if (
+      error &&
+      error !=
+        "Window.fetch: http://localhost:5000http://localhost:5000 is not a valid URL."
+    ) {
+      console.log(`lone 39: ${error}`);
+      router.push("/camera");
+    }
+  }, [data, loading, error]);
+  return (
+    <>
+      <h1>Review Ideas</h1>
+      {displayIdeas ? (
+        data.aiResponse.list.map((element) => {
+          return (
+            <>
+              <AiIdea key={element.number} idea={element} />
+            </>
+          );
+        })
+      ) : (
+        <>
+          <h1>Loading ...</h1>
+        </>
+      )}
+    </>
+  );
 }
