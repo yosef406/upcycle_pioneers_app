@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import AiIdea from "@/components/AiIdea";
 import { useRouter } from "next/navigation";
 export default function Review() {
-  const { data, loading, error, request } = useFetch("http://localhost:5000");
+  const { data, loading, error, request } = useFetch(
+    "https://upcycle.onrender.com"
+  );
   const [localData, setLocalData] = useState(null);
   const [displayIdeas, setDisplayIdeas] = useState(false);
   const router = useRouter();
@@ -35,11 +37,7 @@ export default function Review() {
         setDisplayIdeas(true);
         localStorage.removeItem("apiData");
       }
-    } else if (
-      error &&
-      error !=
-        "Window.fetch: http://localhost:5000http://localhost:5000 is not a valid URL."
-    ) {
+    } else if (error && error.split(" ")[0] != "Window.fetch:") {
       console.log(`lone 39: ${error}`);
       router.push("/camera");
     }

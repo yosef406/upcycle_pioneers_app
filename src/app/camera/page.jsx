@@ -12,7 +12,9 @@ export default function Camera() {
   const [openCamera, setOpenCamera] = useState(false);
   const canvasRef = useRef(null);
   const [imgExist, setImgExist] = useState(false);
-  const { data, loading, error, request } = useFetch("http://localhost:5000");
+  const { data, loading, error, request } = useFetch(
+    "https://upcycle.onrender.com"
+  );
   const router = useRouter();
 
   useEffect(() => {
